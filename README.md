@@ -68,6 +68,15 @@ python3 portfolio_value.py --portfolio examples/portfolio.example.json --json
 
 核對時，兩筆相加應等於庫存總數（700 + 300 = 1,000 股）。計算質押維持率時，只有標記為 `true` 的 300 股計入擔保品市值。若畫面已明列「未質押股數」，可直接採用該數字；若無法判斷總覽是否包含質押股，先確認欄位定義再更新。
 
+#### 2330 截圖實測結果
+
+使用版本 `f1ce838` 的技能說明和上方虛構截圖，在獨立的暫存目錄分兩輪測試。
+
+1. **只問「圖中持股多少？」** 助理回答：2330 共 1,000 股，其中一般持股 700 股、質押持股 300 股。回答前後，存放私人持股檔的測試目錄都是空的。
+2. **明確要求「依這張截圖建立持股檔」。** 助理建立了 1 個 JSON 檔。用 `load_portfolio` 讀回後，確認只有兩筆：2330 一般持股 **700 股**（`pledged: false`）及 2330 質押持股 **300 股**（`pledged: true`）。
+
+測試也核對了範例檔中的 2330 **10 股**、0050、AAPL 和範例現金、借款均未帶入。截圖未列借款餘額，因此本次估值的質押維持率為 `null`。
+
 程式以 `pledged=true` 的台股市值除以 `loan_twd`，計算 `pledge_coverage_percent`（%）。質押股票報價缺失、借款餘額未知或為零時不輸出比率。券商正式維持率可能按契約納入其他擔保品、折扣與負債；若需要與券商數字一致，須以該券商規則和當前借款資料核對。截圖裡的券商維持率可作比對，但不應悄悄覆寫程式估算值。
 
 報價取自 Yahoo Finance chart endpoint，可能延遲、停留在前一交易日或無法取得。每筆報價和匯率附 UTC 時間；程式不保證它是即時成交價或正式收盤價。查價失敗時不輸出完整資產總額，exit code 為 1；輸入錯誤為 2。
@@ -131,6 +140,15 @@ In this separate screenshot example, the holdings screen shows **1,000 shares of
 ```
 
 The rows add up to 1,000. Only the 300 pledged shares count toward coverage. If a screen explicitly lists unpledged shares, use that figure directly. If the total's definition is unclear, confirm it before updating.
+
+#### 2330 screenshot test results
+
+This two-step test used the fictional screenshot above and the skill instructions from version `f1ce838` in a separate temporary directory.
+
+1. **“How many shares are shown?”** The assistant reported 1,000 shares of 2330: 700 unpledged and 300 pledged. The directory designated for the private portfolio file was empty both before and after the answer.
+2. **“Create a holdings file from this screenshot.”** The assistant created one JSON file. Reading it back with `load_portfolio` confirmed exactly two entries: **700 unpledged** shares of 2330 (`pledged: false`) and **300 pledged** shares of 2330 (`pledged: true`).
+
+The file contained none of the sample portfolio’s 10-share 2330 position, 0050 or AAPL holdings, cash or loan balance. The screenshot showed no outstanding loan balance, so the valuation returned `null` for collateral coverage.
 
 ### Interpreting the output
 
