@@ -6,11 +6,13 @@
 
 用公開報價估算台股、美股持股的台幣現值，並列出現金、借款與質押持股市值／借款比率。只需 Python 3 標準函式庫。
 
-## 使用
+## 第一次使用
 
-1. 複製 `examples/portfolio.example.json` 到你自己的私人路徑，修改成自己的持股。不要把真實持股提交到 Git。
-2. 執行 `python3 portfolio_value.py --portfolio /path/to/portfolio.json`。
-3. 要取得結構化結果，加入 `--json`。
+1. 在 GitHub 選 **Code → Download ZIP**，解壓縮後，在含有 `portfolio_value.py` 的資料夾開啟終端機。
+2. 安裝 Python 3 後，直接用虛構資料試跑：`python3 portfolio_value.py --portfolio examples/portfolio.example.json --json`。查看 `summary.pledge_coverage_percent`，即可看到依當次報價估算的質押維持率。
+3. 用能看圖、讀寫本機檔案並執行 Python 的 AI 助理開啟同一個資料夾，貼上：「請閱讀 [SKILL.md](SKILL.md)，用範例持股查詢現值，說明質押維持率怎麼算。」
+
+要開始記錄自己的持股時，請指定專案外的私人檔案路徑，並明確要求「請依這些截圖建立我的持股檔」。新檔只填入已確認的個人持股與餘額；範例中的股票、股數、現金與借款都不要帶入。之後可用 `python3 portfolio_value.py --portfolio /path/to/portfolio.json` 查詢，加上 `--json` 可取得結構化輸出。
 
 檔案格式見範例。`market` 可為 `TW` 或 `US`；台股代碼不帶 `.TW`；`shares` 必須大於零。`pledged` 標示台股質押持股。同一股票若同時有一般持股與質押持股，請列成兩筆。`cash_twd`、`loan_twd` 未知時請省略；省略現金會使資產合計與淨資產顯示為空，省略借款會使淨資產與質押比率顯示為空。不能填零冒充已確認的餘額。
 
@@ -40,7 +42,7 @@ python3 portfolio_value.py --portfolio examples/portfolio.example.json --json
 
 在支援看圖的 AI 助理中，把券商 App 的持股頁面截圖交給助理，並請它依 `SKILL.md` 更新**本機私人**持股 JSON。可提供多張截圖，涵蓋一般持股、質押持股，以及借款餘額頁；若要完整資產總覽，還需提供現金資料。截圖可讓助理整理資料，命令列程式本身沒有圖片辨識功能。
 
-助理應逐筆核對股票代號、股數、幣別及是否質押。能清楚辨識且對應帳戶確定的資料，可先備份私人 JSON，再更新並驗證格式，最後回報實際差異；不需另外下指令確認。看不清、被裁切或頁面未涵蓋的資料須標成「需確認」，不可猜測，也不可把未出現在截圖中的既有持股直接刪除。若截圖與現有資料衝突、或無法判定一般股與質押股的歸屬，先列出差異請使用者釐清。截圖中的姓名、帳號與餘額屬敏感資料，請勿提交到公開倉庫。
+助理應逐筆核對股票代號、股數、幣別及是否質押。只提供截圖、詢問內容或要求試算時，一律唯讀。只有在使用者明確要求建立或更新持股檔時才寫入；更新既有檔案前先備份，完成後驗證格式並回報差異。看不清、被裁切或頁面未涵蓋的資料須標成「需確認」，不可猜測，也不可把未出現在截圖中的既有持股直接刪除。若截圖與現有資料衝突、或無法判定一般股與質押股的歸屬，先列出差異請使用者釐清。截圖中的姓名、帳號與餘額屬敏感資料，請勿提交到公開倉庫。
 
 ### 截圖範例：同一檔股票有部分股數已質押
 
@@ -80,9 +82,13 @@ python3 portfolio_value.py --portfolio examples/portfolio.example.json --json
 
 Estimate Taiwan and US stock holdings in TWD using public quotes. The report includes cash, loans and estimated coverage of loans secured by Taiwan stocks. Requires only the Python 3 standard library.
 
-### Run a valuation
+### First-time setup
 
-Copy [the fictional portfolio](examples/portfolio.example.json) to a private location and edit your copy. Run `python3 portfolio_value.py --portfolio /path/to/portfolio.json`. Add `--json` for structured output.
+1. On GitHub, choose **Code → Download ZIP**. Extract the archive and open a terminal in the folder containing `portfolio_value.py`.
+2. With Python 3 installed, run `python3 portfolio_value.py --portfolio examples/portfolio.example.json --json`. The fictional portfolio is ready to use. Look for `summary.pledge_coverage_percent` to see the coverage estimate at the prices returned.
+3. Open the same folder in an AI assistant that can read images, access local files and run Python. Try this prompt: “Read [SKILL.md](SKILL.md), value the example portfolio and explain how you calculated collateral coverage.”
+
+To start your own portfolio, specify a private path outside the repository and explicitly ask the assistant to create the file from your screenshots. Include only your confirmed holdings and balances. Leave out all sample symbols, share counts, cash and loans unless independently confirmed by your own data. Query your file with `python3 portfolio_value.py --portfolio /path/to/portfolio.json`. Add `--json` for structured output.
 
 Use `TW` or `US` for `market`, omit the exchange suffix from Taiwan symbols, and enter a positive number of shares. Use separate rows for pledged and unpledged shares of the same stock. Omit unknown balances. Missing `cash_twd` leaves total and net assets blank. Missing `loan_twd` leaves net assets and coverage blank. Enter zero only for a confirmed zero balance.
 
@@ -109,7 +115,7 @@ Read `summary.pledge_coverage_percent` in the output.
 
 Give a vision-capable assistant the holdings, pledge and loan balance screens and ask it to follow [SKILL.md](SKILL.md) to update your private JSON. Include cash for a full asset valuation. The assistant reads the images. The command-line tool reads JSON.
 
-Match each visible symbol, share count, currency and pledge status to the correct account. For clear entries, back up the file, update it, validate it and report the changes. Keep existing entries outside the screenshot. Ask for clarification if a field is cropped, the account is ambiguous or figures conflict.
+Match each visible symbol, share count, currency and pledge status to the correct account. A screenshot, question or valuation request is read-only. Write only when the user explicitly requests creation or an update. Back up an existing file before updating it, validate the result and report the changes. Keep existing entries outside the screenshot. Ask for clarification if a field is cropped, the account is ambiguous or figures conflict.
 
 ![Fictional brokerage screen: 1,000 shares of 2330, including 700 unpledged and 300 pledged.](assets/portfolio-2330-demo.svg?v=2)
 
