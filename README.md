@@ -40,6 +40,8 @@ python3 portfolio_value.py --portfolio examples/portfolio.example.json --json
 
 ### 截圖範例：同一檔股票有部分股數已質押
 
+![虛構券商 App 持股明細：2330 庫存共 1,000 股，包含一般持股 700 股與質押持股 300 股。](assets/portfolio-2330-demo.svg)
+
 假設同一帳戶、同一時間的券商 App 截圖顯示下列資料。股數均為虛構，單位為「股」。
 
 | 截圖頁面 | 股票代號 | 畫面上的欄位 | 股數 |
