@@ -18,5 +18,5 @@
 <circle cx="54" cy="351" r="8" fill="#d69a3b"/>
 <text x="78" y="359" font-size="23" fill="#163749">質押持股</text>
 <text x="574" y="359" text-anchor="end" font-size="26" font-weight="700" fill="#163749">300 股</text>
-<text x="46" y="404" font-size="17" fill="#526674">質押維持率的擔保品市值只計入這 300 股。</text>
+<text x="46" y="404" font-size="30" font-weight="700" fill="#163749">估算維持率，只計入質押的 300 股。</text>
 </g></svg>
