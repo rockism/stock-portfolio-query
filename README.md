@@ -1,5 +1,9 @@
 # Portfolio Value Query
 
+[繁體中文](#繁體中文) · [English](#english)
+
+## 繁體中文
+
 用公開報價估算台股、美股持股的台幣現值，並列出現金、借款與質押持股市值／借款比率。只需 Python 3 標準函式庫。
 
 ## 使用
@@ -71,3 +75,63 @@ python3 portfolio_value.py --portfolio examples/portfolio.example.json --json
 ## 授權
 
 程式與文件採 [MIT License](LICENSE)。
+
+## English
+
+Estimate Taiwan and US stock holdings in TWD using public quotes. The report includes cash, loans and estimated coverage of loans secured by Taiwan stocks. Requires only the Python 3 standard library.
+
+### Run a valuation
+
+Copy [the fictional portfolio](examples/portfolio.example.json) to a private location and edit your copy. Run `python3 portfolio_value.py --portfolio /path/to/portfolio.json`. Add `--json` for structured output.
+
+Use `TW` or `US` for `market`, omit the exchange suffix from Taiwan symbols, and enter a positive number of shares. Use separate rows for pledged and unpledged shares of the same stock. Omit unknown balances. Missing `cash_twd` leaves total and net assets blank. Missing `loan_twd` leaves net assets and coverage blank. Enter zero only for a confirmed zero balance.
+
+### Worked example: 360.8% collateral coverage
+
+At 00:27:56 on November 20, 2026 (Taiwan time, UTC+8), version `91df8f6` retrieved these Yahoo Finance quotes for the sample portfolio.
+
+| Symbol | Example position | Price or exchange rate | Quote time (UTC+8) |
+|---|---|---:|---|
+| 2330 | 10 unpledged shares | NT$2,100.00 | 2026-11-19 13:30:05 |
+| 0050 | 20 pledged shares | NT$90.20 | 2026-11-19 13:30:01 |
+| AAPL | 2 unpledged shares | US$349.72 | 2026-11-20 00:27:53 |
+| USD/TWD | Currency conversion | NT$33.014 per US dollar | 2026-11-20 00:27:53 |
+
+Only 0050 was pledged. Its 20 shares × NT$90.20 were worth **NT$1,804**. Dividing by the NT$500 outstanding loan gives **NT$1,804 ÷ NT$500 × 100% = 360.8%**, or about NT$3.61 in collateral per NT$1 borrowed. To see the estimate at current available prices, run:
+
+```sh
+python3 portfolio_value.py --portfolio examples/portfolio.example.json --json
+```
+
+Read `summary.pledge_coverage_percent` in the output.
+
+### Update holdings from brokerage screenshots
+
+Give a vision-capable assistant the holdings, pledge and loan balance screens and ask it to follow [SKILL.md](SKILL.md) to update your private JSON. Include cash for a full asset valuation. The assistant reads the images. The command-line tool reads JSON.
+
+Match each visible symbol, share count, currency and pledge status to the correct account. For clear entries, back up the file, update it, validate it and report the changes. Keep existing entries outside the screenshot. Ask for clarification if a field is cropped, the account is ambiguous or figures conflict.
+
+![Fictional brokerage screen: 1,000 shares of 2330, including 700 unpledged and 300 pledged.](assets/portfolio-2330-demo.svg?v=2)
+
+In this separate screenshot example, the holdings screen shows **1,000 shares of 2330 including collateral**, and the pledge screen shows **300 pledged** in the same account at the same time. Record **700 unpledged shares** and **300 pledged shares**:
+
+```json
+{
+  "holdings": [
+    {"market": "TW", "symbol": "2330", "shares": 700, "pledged": false},
+    {"market": "TW", "symbol": "2330", "shares": 300, "pledged": true}
+  ]
+}
+```
+
+The rows add up to 1,000. Only the 300 pledged shares count toward coverage. If a screen explicitly lists unpledged shares, use that figure directly. If the total's definition is unclear, confirm it before updating.
+
+### Interpreting the output
+
+Coverage equals the market value of pledged Taiwan shares divided by the outstanding loan, expressed as a percentage. A missing pledged quote or a missing or zero loan balance leaves coverage blank. Your broker may apply collateral discounts or include other assets or liabilities under your agreement. Keep the broker's figure separate when comparing it with this estimate.
+
+Yahoo Finance quotes and exchange rates carry UTC timestamps and can be delayed, unavailable or from a previous session. When a required quote is missing, the tool omits complete portfolio totals and exits with code 1. Invalid input exits with code 2. Keep real holdings, account screenshots, private output and credentials out of public repositories.
+
+### License
+
+The code and documentation use the [MIT License](LICENSE).
