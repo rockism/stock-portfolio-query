@@ -1,0 +1,9 @@
+{
+  "holdings": [
+    {"market": "TW", "symbol": "2330", "shares": 10, "pledged": false},
+    {"market": "TW", "symbol": "0050", "shares": 20, "pledged": true},
+    {"market": "US", "symbol": "AAPL", "shares": 2, "pledged": false}
+  ],
+  "cash_twd": 1000,
+  "loan_twd": 500
+}
